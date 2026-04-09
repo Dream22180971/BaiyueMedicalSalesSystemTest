@@ -1,0 +1,27 @@
+# 环境变量文件
+.env
+
+# 日志文件
+logs/
+
+# 缓存文件
+__pycache__/
+.pytest_cache/
+
+# 测试报告
+reports/
+
+# 依赖包
+venv/
+env/
+
+# IDE 相关
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 操作系统相关
+.DS_Store
+Thumbs.db
