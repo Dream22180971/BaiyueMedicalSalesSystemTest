@@ -1,356 +1,180 @@
-# BYSMS系统接口测试框架
+# BYSMS 接口自动化测试框架
 
-基于pytest+requests的BYSMS（白月销售管理系统）接口自动化测试框架。
+> 一行命令跑完所有 API 测试——基于 pytest + requests，自动清理数据，支持并行和多种报告。
 
-## 项目概述
-
-本测试框架针对BYSMS系统的API接口进行自动化测试，覆盖登录、客户管理、药品管理、订单管理等核心功能。
-
-### 系统信息
-- **被测系统**: BYSMS (白月销售管理系统)
-- **测试环境**: http://127.0.0.1:8047
-- **接口版本**: API v1.2
-
-## 项目结构
-
-```
-ByhyTestSystem/
-├── config/                 # 配置文件
-│   ├── __init__.py
-│   └── config.py          # 测试配置类
-├── utils/                 # 工具类
-│   ├── __init__.py
-│   ├── logger.py          # 日志记录器
-│   └── http_client.py     # HTTP客户端封装
-├── api/                   # API业务封装
-│   ├── __init__.py
-│   ├── customer_api.py    # 客户管理API
-│   ├── medicine_api.py    # 药品管理API
-│   └── order_api.py       # 订单管理API
-├── tests/                 # 测试用例
-│   ├── __init__.py
-│   ├── conftest.py        # pytest配置和夹具
-│   ├── test_login.py      # 登录功能测试
-│   ├── test_customer.py   # 客户管理测试
-│   ├── test_medicine.py   # 药品管理测试
-│   └── test_order.py      # 订单管理测试
-├── requirements.txt       # 依赖包
-├── pytest.ini            # pytest配置
-├── .env.example          # 环境变量示例
-├── run_tests.py          # 测试运行脚本
-├── README.md             # 项目说明
-└── BYSMS系统接口测试框架使用指导手册.md  # 使用指导手册
-```
-
-## 功能特性
-
-### 测试覆盖范围
-- ✅ 登录认证测试
-- ✅ 客户管理测试（增删改查、搜索、分页）
-- ✅ 药品管理测试（增删改查、搜索、分页）
-- ✅ 订单管理测试（增删改查、搜索、分页）
-
-### 框架特性
-- **分层架构**: 配置层、工具层、业务层、测试层分离
-- **数据驱动**: 支持Faker生成测试数据，边界值测试
-- **自动清理**: 测试数据自动创建和清理
-- **重试机制**: 网络请求自动重试
-- **详细日志**: 完整的测试执行日志
-- **多种报告**: 支持HTML、Allure等多种报告格式
-- **并行执行**: 支持多进程并行测试
-
-## 快速开始
-
-### 1. 使用指导手册
-
-项目根目录下提供了详细的使用指导手册：
-- **BYSMS系统接口测试框架使用指导手册.md**：包含完整的测试框架使用说明、运行方法、问题解决等内容
-
-### 2. 环境准备
-
-```bash
-# 克隆项目
-git clone <repository-url>
-cd ByhyTestSystem
-
-# 创建虚拟环境（推荐）
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# 或
-venv\Scripts\activate     # Windows
-
-# 安装依赖
-pip install -r requirements.txt
-```
-
-### 2. 配置环境
-
-```bash
-# 复制环境变量模板
-cp .env.example .env
-
-# 编辑.env文件，配置测试环境信息
-# BASE_URL=http://127.0.0.1:8047
-# ADMIN_USERNAME=byhy
-# ADMIN_PASSWORD=88888888
-```
-
-### 3. 运行测试
-
-```bash
-# 运行所有测试
-python run_tests.py
-
-# 运行冒烟测试
-python run_tests.py --type smoke
-
-# 运行客户管理测试
-python run_tests.py --type customer
-
-# 并行执行测试
-python run_tests.py --parallel
-
-# 生成HTML报告
-python run_tests.py --report html
-
-# 生成Allure报告
-python run_tests.py --report allure
-python run_tests.py --generate-allure
-```
-
-### 4. 使用pytest直接运行
-
-```bash
-# 运行所有测试
-pytest
-
-# 运行标记为smoke的测试
-pytest -m smoke
-
-# 运行特定模块的测试
-pytest tests/test_customer.py
-
-# 生成HTML报告
-pytest --html=reports/report.html --self-contained-html
-
-# 并行执行
-pytest -n auto
-```
-
-## 测试用例设计
-
-### 登录测试 (test_login.py)
-- 正常登录成功
-- 错误密码登录失败
-- 错误用户名登录失败
-- 空凭证登录失败
-- 特殊字符登录失败
-- 超长凭证登录失败
-- 响应格式验证
-- 会话保持测试
-
-### 客户管理测试 (test_customer.py)
-- 客户列表获取
-- 添加客户成功/失败
-- 修改客户信息
-- 删除客户
-- 分页功能测试
-- 搜索功能测试
-- 字段验证测试
-- 边界值测试
-
-### 药品管理测试 (test_medicine.py)
-- 药品列表获取
-- 添加药品成功/失败
-- 修改药品信息
-- 删除药品
-- 分页功能测试
-- 搜索功能测试
-- 字段验证测试
-- 边界值测试
-
-### 订单管理测试 (test_order.py)
-- 订单列表获取
-- 添加订单成功/失败
-- 删除订单
-- 分页功能测试
-- 订单存在性检查
-- 字段验证测试
-
-## 测试数据管理
-
-框架使用pytest fixtures和Faker库动态生成测试数据：
-
-### 1. 测试数据生成
-- 使用Faker库生成真实的测试数据
-- 测试数据自动创建和清理
-- 确保测试数据的唯一性
-
-### 2. Fixtures管理
-在`conftest.py`中定义了多个fixtures：
-- `test_customer_data`: 生成客户测试数据
-- `test_medicine_data`: 生成药品测试数据
-- `test_order_data`: 生成订单测试数据
-- `created_customer`: 创建测试客户并自动清理
-- `created_medicine`: 创建测试药品并自动清理
-- `created_order`: 创建测试订单并自动清理
-
-### 3. 数据隔离
-- 每个测试用例使用独立的测试数据
-- 测试结束后自动清理测试数据
-- 避免测试数据之间的干扰
-
-## 配置说明
-
-### 环境变量 (.env)
-```ini
-# 基础配置
-BASE_URL=http://127.0.0.1:8047
-API_PREFIX=/api/mgr
-
-# 管理员账号
-ADMIN_USERNAME=byhy
-ADMIN_PASSWORD=88888888
-
-# 测试配置
-TEST_TIMEOUT=30
-MAX_RETRIES=3
-LOG_LEVEL=INFO
-```
-
-### pytest配置 (pytest.ini)
-```ini
-[pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
-addopts = -v --tb=short --strict-markers -n auto
-markers =
-    smoke: 冒烟测试
-    regression: 回归测试
-    api: API接口测试
-    customer: 客户管理测试
-    medicine: 药品管理测试
-    order: 订单管理测试
-    login: 登录测试
-filterwarnings =
-    ignore::DeprecationWarning
-```
-
-## CI/CD集成
-
-### GitHub Actions 示例
-```yaml
-name: BYSMS API Tests
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    
-    - name: Run tests
-      run: |
-        python run_tests.py --parallel --report html
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-results
-        path: reports/
-```
-
-## 测试报告
-
-### HTML报告
-![HTML报告示例](docs/html-report.png)
-
-### Allure报告
-```bash
-# 生成Allure报告
-allure generate reports/allure-results -o reports/allure-report --clean
-
-# 打开报告
-allure open reports/allure-report
-```
-
-## 故障排除
-
-### 常见问题
-
-1. **连接被拒绝**
-   - 检查BASE_URL配置是否正确
-   - 确认被测系统是否启动
-
-2. **登录失败**
-   - 检查ADMIN_USERNAME和ADMIN_PASSWORD
-   - 确认账号没有被锁定
-
-3. **测试数据冲突**
-   - 框架会自动清理测试数据
-   - 如遇冲突，可手动清理测试环境
-
-### 调试模式
-```bash
-# 设置详细日志
-LOG_LEVEL=DEBUG pytest -v
-
-# 查看请求详情
-# 在utils/http_client.py中启用详细日志
-```
-
-## 扩展开发
-
-### 添加新的API模块
-1. 在`api/`目录下创建新的API类
-2. 实现对应的CRUD操作方法
-3. 在`tests/`目录下创建测试用例
-4. 在`conftest.py`中添加对应的fixture
-
-### 添加新的测试类型
-1. 在`pytest.ini`中注册新的marker
-2. 在测试用例中使用对应的marker装饰器
-3. 在`run_tests.py`中添加对应的测试类型
-
-## 贡献指南
-
-1. Fork本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建Pull Request
-
-## 许可证
-
-本项目采用MIT许可证。
-
-## 联系方式
-
-- 项目维护者: [Your Name]
-- 邮箱: [your-email@example.com]
-- 项目地址: [GitHub Repository URL]
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python)](https://python.org)
+[![pytest](https://img.shields.io/badge/pytest-7.x-0A9EDC?style=flat)](https://pytest.org)
 
 ---
 
-## 版本来源
+## 目录
 
-本测试框架基于白月黑羽的 BYSMS 系统需求文档：
-[BYSMS系统 需求1.0 - 白月黑羽](https://www.byhy.net/py/django/req_1/)
+- [它是什么](#它是什么)
+- [为什么做](#为什么做)
+- [核心功能](#核心功能)
+- [快速开始](#快速开始)
+- [测试覆盖](#测试覆盖)
+- [技术架构](#技术架构)
+- [FAQ](#faq)
+- [谁适合用](#谁适合用)
+- [关于我](#关于我)
 
-**说明**：此项目仅为演示分享，用于学习和交流接口测试框架的设计与实现。
+---
 
-**注意**: 请确保在运行测试前，BYSMS系统已正确部署并运行在指定端口。
+## 它是什么
+
+一个**销售管理系统 API 自动化测试框架**，帮你做三件事：
+
+1. **自动测接口**：登录、客户管理、药品管理、订单管理，全部覆盖
+2. **自动清理数据**：测试完自动删掉创建的数据，不影响环境
+3. **多种报告**：HTML 报告、Allure 报告、并行执行，一行命令搞定
+
+不需要手动写测试脚本，框架已经帮你搭好了分层架构。
+
+---
+
+## 为什么做
+
+手工测 API 接口太累了——每次发版都要手动测一遍登录、CRUD、分页、搜索，重复劳动而且容易漏。
+
+写测试脚本又太麻烦——每个项目都要从零搭框架、封装 HTTP 请求、处理登录态、管理测试数据。
+
+这个框架的思路：**把重复的活交给机器**。你只需要维护测试用例，框架帮你跑、帮你清理、帮你出报告。
+
+---
+
+## 核心功能
+
+| 你能做什么 | 说明 |
+|-----------|------|
+| **一键运行** | `python run_tests.py` 跑完所有接口测试 |
+| **按类型跑** | 冒烟测试、客户管理、药品管理、订单管理，单独跑 |
+| **并行执行** | `--parallel` 多进程并行，加快速度 |
+| **自动清理** | 测试数据自动创建和清理，不影响环境 |
+| **多种报告** | HTML / Allure / 控制台，按需选择 |
+| **数据驱动** | Faker 生成测试数据，边界值自动覆盖 |
+
+---
+
+## 快速开始
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/Dream22180971/BaiyueMedicalSalesSystem.git
+cd BaiyueMedicalSalesSystem
+
+# 2. 创建虚拟环境
+python -m venv venv
+venv\Scripts\activate     # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# 3. 安装依赖
+pip install -r requirements.txt
+
+# 4. 配置环境变量
+cp .env.example .env
+# 编辑 .env，填入测试环境地址和账号
+
+# 5. 跑测试
+python run_tests.py
+```
+
+### 常用命令
+
+```bash
+# 冒烟测试
+python run_tests.py --type smoke
+
+# 只跑客户管理
+python run_tests.py --type customer
+
+# 并行执行
+python run_tests.py --parallel
+
+# 生成 HTML 报告
+python run_tests.py --report html
+
+# 生成 Allure 报告
+python run_tests.py --report allure
+```
+
+---
+
+## 测试覆盖
+
+| 模块 | 测试内容 |
+|------|----------|
+| **登录** | 正常登录、错误密码、空凭证、特殊字符、超长凭证、会话保持 |
+| **客户管理** | 增删改查、搜索、分页、字段验证、边界值 |
+| **药品管理** | 增删改查、搜索、分页、字段验证、边界值 |
+| **订单管理** | 增删改查、搜索、分页、字段验证、订单存在性检查 |
+
+---
+
+## 技术架构
+
+```
+┌──────────────────────────────────┐
+│     测试运行层                    │
+│  pytest · run_tests.py           │
+├──────────────────────────────────┤
+│     业务封装层 (api/)             │
+│  customer_api · medicine_api     │
+│  order_api                       │
+├──────────────────────────────────┤
+│     工具层 (utils/)              │
+│  http_client · logger            │
+├──────────────────────────────────┤
+│     配置层 (config/)             │
+│  .env · config.py                │
+├──────────────────────────────────┤
+│     被测系统                     │
+│  BYSMS (白月销售管理系统)         │
+└──────────────────────────────────┘
+```
+
+**分层设计**：配置层 → 工具层 → 业务层 → 测试层，每层职责清晰，加新接口只需加一层。
+
+---
+
+## FAQ
+
+**Q: 被测系统从哪来？**
+A: 基于白月黑羽的 BYSMS 系统，需要自行部署到本地 8047 端口。
+
+**Q: 测试数据会冲突吗？**
+A: 不会。框架使用 pytest fixtures 动态生成数据，测试结束后自动清理。
+
+**Q: 怎么加新接口测试？**
+A: 在 `api/` 目录加 API 类，在 `tests/` 目录加测试用例，在 `conftest.py` 加 fixture。
+
+**Q: 支持 CI/CD 吗？**
+A: 支持。README 中有 GitHub Actions 示例，也可以集成到 Jenkins 等平台。
+
+---
+
+## 谁适合用
+
+- **测试工程师**：学习接口自动化框架的设计与实现
+- **Python 学习者**：pytest + requests + fixtures 的实战案例
+- **正在做毕设的学生**：自动化测试方向的参考项目
+- **想搭测试框架的人**：直接拿去改，省掉从零搭建的时间
+
+---
+
+## 关于我
+
+我是**肖恩沃尔特**（Sean Walter），一个从测试工程师正在转型为 AI 独立开发者的程序员。
+
+这个框架是我做接口测试时的产物——与其每次手动测，不如搭个框架让机器跑。
+
+- GitHub: [Dream22180971](https://github.com/Dream22180971)
+- Twitter/X: [@sean_walter0717](https://x.com/sean_walter0717)
+- 博客: [seanwalter.top](https://seanwalter.top)
+
+---
+
+## License
+
+[MIT](./LICENSE)
