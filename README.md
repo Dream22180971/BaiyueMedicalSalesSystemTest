@@ -21,6 +21,40 @@ pip install -r requirements.txt
 python run_tests.py
 ```
 
+> **EN:** Clone, install, run. Advanced configuration and project-specific details are documented below.  
+> **中文：** 克隆、安装、运行即可开始。高级配置和项目特定说明继续保留在下方。
+
+## Why this project / 为什么做这个项目
+
+**EN:** This project starts from one concrete problem and prioritizes being understandable, runnable and useful before becoming complex.
+
+**中文：** 这个项目从一个明确问题出发，优先做到易理解、能运行、真正有用，再逐步增加复杂能力。
+
+---
+
+Run a complete API regression suite with one command using pytest and requests. / 基于 pytest + requests，一条命令跑完整套 API 回归测试。
+
+<!-- README-V2-BILINGUAL -->
+
+# BaiyueMedicalSalesSystemTest
+
+> **EN:** Run a complete API regression suite with one command using pytest and requests.  
+> **中文：** 基于 pytest + requests，一条命令跑完整套 API 回归测试。
+
+## Demo / 演示
+
+CLI/test-report demo GIF is not yet stored in this repo. / 当前仓库尚未存放 CLI 或测试报告 GIF。
+
+## Quick Start / 5 分钟快速开始
+
+```bash
+git clone https://github.com/Dream22180971/BaiyueMedicalSalesSystemTest.git
+cd BaiyueMedicalSalesSystemTest
+python -m venv venv
+pip install -r requirements.txt
+python run_tests.py
+```
+
 > **EN:** The commands above are intentionally kept short: clone, install, run. Project-specific configuration and advanced usage stay in the detailed documentation below.  
 > **中文：** 上面的命令刻意保持最短路径：克隆、安装、运行。项目特定配置与高级用法继续保留在下方详细文档中。
 
